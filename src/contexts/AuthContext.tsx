@@ -6,13 +6,14 @@ type User = {
   name: string;
   email: string;
   businessName?: string;
+  plan?: "free" | "standard" | "pro";
 };
 
 type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, businessName: string) => Promise<void>;
+  register: (name: string, email: string, password: string, businessName: string, plan?: string) => Promise<void>;
   logout: () => void;
   loading: boolean;
 };
@@ -52,7 +53,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: "user-" + Math.random().toString(36).substr(2, 9),
         name: "Demo User",
         email,
-        businessName: "Demo Business"
+        businessName: "Demo Business",
+        plan: "free"
       };
 
       setUser(mockUser);
@@ -65,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const register = async (name: string, email: string, password: string, businessName: string) => {
+  const register = async (name: string, email: string, password: string, businessName: string, plan: string = "free") => {
     try {
       setLoading(true);
       // Simulate API call
@@ -76,7 +78,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: "user-" + Math.random().toString(36).substr(2, 9),
         name,
         email,
-        businessName
+        businessName,
+        plan
       };
 
       setUser(newUser);

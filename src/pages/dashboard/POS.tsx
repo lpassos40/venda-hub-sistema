@@ -25,7 +25,8 @@ import {
   Smartphone,
   Receipt,
   Minus,
-  X
+  X,
+  Check
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 

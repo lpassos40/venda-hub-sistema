@@ -17,6 +17,8 @@ import Suppliers from "./pages/dashboard/Suppliers";
 import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Invoices from "./pages/dashboard/Invoices";
+import POS from "./pages/dashboard/POS";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +44,8 @@ const App = () => (
               <Route path="customers" element={<Customers />} />
               <Route path="orders" element={<Orders />} />
               <Route path="suppliers" element={<Suppliers />} />
+              <Route path="invoices" element={<Invoices />} />
+              <Route path="pos" element={<POS />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

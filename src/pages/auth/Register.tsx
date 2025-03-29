@@ -6,7 +6,55 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Check } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+
+const planOptions = [
+  {
+    id: "free",
+    name: "Trial Gratuito",
+    price: "R$ 0",
+    period: "14 dias",
+    description: "Ideal para conhecer o sistema",
+    features: [
+      "Acesso a todas as funcionalidades básicas",
+      "Limite de 50 produtos",
+      "Limite de 20 vendas por dia",
+      "1 usuário"
+    ]
+  },
+  {
+    id: "standard",
+    name: "Padrão",
+    price: "R$ 99,90",
+    period: "mensal",
+    description: "Perfeito para pequenos negócios",
+    features: [
+      "Todas as funcionalidades do Trial",
+      "Produtos ilimitados",
+      "Vendas ilimitadas",
+      "Suporte 5x8",
+      "3 usuários",
+      "Relatórios básicos"
+    ]
+  },
+  {
+    id: "pro",
+    name: "Profissional",
+    price: "R$ 199,90",
+    period: "mensal",
+    description: "Completo para médias empresas",
+    features: [
+      "Todas as funcionalidades do Padrão",
+      "Usuários ilimitados",
+      "Suporte prioritário 24/7",
+      "Relatórios avançados",
+      "Integração com sistemas fiscais",
+      "Backup diário",
+      "Dashboard personalizado"
+    ]
+  }
+];
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -14,12 +62,14 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [businessName, setBusinessName] = useState("");
+  const [selectedPlan, setSelectedPlan] = useState("free");
+  const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleStepOne = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!name || !email || !password || !confirmPassword || !businessName) {
@@ -39,13 +89,19 @@ const Register = () => {
       });
       return;
     }
+
+    setStep(2);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     
     try {
       setIsSubmitting(true);
-      await register(name, email, password, businessName);
+      await register(name, email, password, businessName, selectedPlan);
       toast({
         title: "Cadastro realizado com sucesso!",
-        description: "Bem-vindo ao VendaHub."
+        description: `Bem-vindo ao VendaHub. Seu plano ${planOptions.find(p => p.id === selectedPlan)?.name} foi ativado.`,
       });
       navigate("/dashboard");
     } catch (error) {
@@ -113,8 +169,8 @@ const Register = () => {
       
       {/* Right side - Form */}
       <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-        <div className="mx-auto w-full max-w-sm lg:w-96">
-          <div className="mb-10">
+        <div className="mx-auto w-full max-w-md lg:max-w-2xl">
+          <div className="mb-6">
             <Link to="/" className="inline-flex items-center text-sm font-medium text-primary hover:underline">
               <ArrowLeft className="mr-1 h-4 w-4" />
               Voltar para o início
@@ -132,114 +188,174 @@ const Register = () => {
           </div>
 
           <div className="mt-8">
-            <div className="mt-6">
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <Label htmlFor="name">Nome completo</Label>
-                  <div className="mt-1">
-                    <Input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      placeholder="Seu nome"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
+            {step === 1 ? (
+              <div>
+                <form onSubmit={handleStepOne} className="space-y-5">
+                  <div>
+                    <Label htmlFor="name">Nome completo</Label>
+                    <div className="mt-1">
+                      <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        required
+                        placeholder="Seu nome"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <Label htmlFor="businessName">Nome do negócio</Label>
-                  <div className="mt-1">
-                    <Input
-                      id="businessName"
-                      name="businessName"
-                      type="text"
-                      required
-                      placeholder="Nome da sua empresa"
-                      value={businessName}
-                      onChange={(e) => setBusinessName(e.target.value)}
-                    />
+                  <div>
+                    <Label htmlFor="businessName">Nome do negócio</Label>
+                    <div className="mt-1">
+                      <Input
+                        id="businessName"
+                        name="businessName"
+                        type="text"
+                        required
+                        placeholder="Nome da sua empresa"
+                        value={businessName}
+                        onChange={(e) => setBusinessName(e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <div className="mt-1">
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      placeholder="seu@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
+                  <div>
+                    <Label htmlFor="email">Email</Label>
+                    <div className="mt-1">
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        required
+                        placeholder="seu@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <Label htmlFor="password">Senha</Label>
-                  <div className="mt-1">
-                    <Input
-                      id="password"
-                      name="password"
-                      type="password"
-                      required
-                      placeholder="******"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
+                  <div>
+                    <Label htmlFor="password">Senha</Label>
+                    <div className="mt-1">
+                      <Input
+                        id="password"
+                        name="password"
+                        type="password"
+                        required
+                        placeholder="******"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <Label htmlFor="confirmPassword">Confirme sua senha</Label>
-                  <div className="mt-1">
-                    <Input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type="password"
-                      required
-                      placeholder="******"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
+                  <div>
+                    <Label htmlFor="confirmPassword">Confirme sua senha</Label>
+                    <div className="mt-1">
+                      <Input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type="password"
+                        required
+                        placeholder="******"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div className="mt-6">
-                  <Button
-                    type="submit"
+                  <Button 
+                    type="submit" 
                     className="w-full"
-                    disabled={isSubmitting}
                   >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Criando conta...
-                      </>
-                    ) : (
-                      "Criar conta grátis"
-                    )}
+                    Continuar
                   </Button>
+                </form>
+              </div>
+            ) : (
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Escolha seu plano</h3>
+                <div className="grid gap-4 md:grid-cols-3">
+                  {planOptions.map((plan) => (
+                    <Card 
+                      key={plan.id} 
+                      className={`overflow-hidden transition-all ${selectedPlan === plan.id ? 'ring-2 ring-primary' : 'hover:shadow-md'}`}
+                      onClick={() => setSelectedPlan(plan.id)}
+                    >
+                      <div className={`p-1 text-center ${selectedPlan === plan.id ? 'bg-primary text-white' : 'bg-muted'}`}>
+                        {selectedPlan === plan.id && <span>Selecionado</span>}
+                      </div>
+                      <CardContent className="p-6">
+                        <div className="mb-4">
+                          <h3 className="text-lg font-bold">{plan.name}</h3>
+                          <div className="mt-1">
+                            <span className="text-2xl font-bold">{plan.price}</span>
+                            {plan.id !== 'free' && <span className="text-sm text-muted-foreground">/{plan.period}</span>}
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">{plan.description}</p>
+                        </div>
+                        <ul className="space-y-2">
+                          {plan.features.map((feature, index) => (
+                            <li key={index} className="flex items-start">
+                              <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                              <span className="text-sm">{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <Button
+                          variant={selectedPlan === plan.id ? "default" : "outline"}
+                          className="w-full mt-4"
+                          onClick={() => setSelectedPlan(plan.id)}
+                        >
+                          {selectedPlan === plan.id ? "Selecionado" : "Selecionar"}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
-              </form>
-              
-              <p className="mt-6 text-center text-xs text-gray-500">
-                Ao criar uma conta, você concorda com nossos{" "}
-                <a href="#" className="font-medium text-primary hover:underline">
-                  Termos de Serviço
-                </a>{" "}
-                e{" "}
-                <a href="#" className="font-medium text-primary hover:underline">
-                  Política de Privacidade
-                </a>
-                .
-              </p>
-            </div>
+                <form onSubmit={handleSubmit} className="mt-6">
+                  <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full sm:w-auto"
+                      onClick={() => setStep(1)}
+                    >
+                      Voltar
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="w-full sm:w-auto"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Criando conta...
+                        </>
+                      ) : (
+                        "Criar conta grátis"
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            )}
+            
+            <p className="mt-6 text-center text-xs text-gray-500">
+              Ao criar uma conta, você concorda com nossos{" "}
+              <a href="#" className="font-medium text-primary hover:underline">
+                Termos de Serviço
+              </a>{" "}
+              e{" "}
+              <a href="#" className="font-medium text-primary hover:underline">
+                Política de Privacidade
+              </a>
+              .
+            </p>
           </div>
         </div>
       </div>

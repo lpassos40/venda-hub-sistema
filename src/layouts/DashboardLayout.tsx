@@ -13,7 +13,9 @@ import {
   LogOut,
   Menu,
   X,
-  ChevronRight
+  ChevronRight,
+  FileText,
+  StoreIcon
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -45,6 +47,11 @@ const DashboardLayout = () => {
       icon: <LayoutDashboard className="h-5 w-5" />
     },
     {
+      path: "/dashboard/pos",
+      name: "Atendimento",
+      icon: <StoreIcon className="h-5 w-5" />
+    },
+    {
       path: "/dashboard/products",
       name: "Produtos",
       icon: <Package className="h-5 w-5" />
@@ -58,6 +65,11 @@ const DashboardLayout = () => {
       path: "/dashboard/orders",
       name: "Pedidos",
       icon: <ShoppingCart className="h-5 w-5" />
+    },
+    {
+      path: "/dashboard/invoices",
+      name: "Notas Fiscais",
+      icon: <FileText className="h-5 w-5" />
     },
     {
       path: "/dashboard/customers",
@@ -107,6 +119,11 @@ const DashboardLayout = () => {
         {/* Business name */}
         <div className="mb-6 px-4">
           <p className="text-sm font-medium">{user?.businessName || "Meu Negócio"}</p>
+          <div className="mt-1">
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+              {user?.plan === 'pro' ? 'Plano Pro' : user?.plan === 'standard' ? 'Plano Padrão' : 'Trial Gratuito'}
+            </span>
+          </div>
         </div>
 
         {/* Navigation */}

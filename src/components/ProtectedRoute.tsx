@@ -3,7 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, user } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -16,6 +16,12 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // Plan restriction check for specific routes
+  const restrictedRoutes = ["/dashboard/invoices"];
+  if (user?.plan === "free" && restrictedRoutes.some(route => location.pathname.includes(route))) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;

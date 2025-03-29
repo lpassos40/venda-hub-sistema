@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Plus, Edit, Trash2, Truck, BuildingStorefront, Mail, Phone, MapPin, Calendar } from "lucide-react";
+import { Search, Plus, Edit, Trash2, Truck, Building, Mail, Phone, MapPin, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // Mock data
@@ -156,7 +156,7 @@ const Suppliers = () => {
                   <CardContent>
                     <div className="space-y-3">
                       <div className="flex items-center text-sm">
-                        <BuildingStorefront className="mr-2 h-4 w-4 text-muted-foreground" />
+                        <Building className="mr-2 h-4 w-4 text-muted-foreground" />
                         <span>{supplier.contact}</span>
                       </div>
                       <div className="flex items-center text-sm">
